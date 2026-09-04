@@ -1,5 +1,5 @@
 --- ============================================
--- RaceDay Database Script
+--- RaceDay Database Script
 -- Part 1 - System Planning and Database
 -- Run this script in SQL Server Management Studio (SSMS)
 -- ============================================
