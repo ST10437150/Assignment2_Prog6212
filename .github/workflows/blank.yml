@@ -18,7 +18,12 @@ jobs:
         with:
           dotnet-version: 8.0.x
 
-      - name: Find and restore test project
+      - name: Locate project files
+        run: |
+          find . -name "*.csproj"
+          find . -name "*.sln"
+
+      - name: Restore dependencies
         run: dotnet restore "$(find . -name 'RaceDayApi.Tests.csproj' -print -quit)"
 
       - name: Build test project
