@@ -1,0 +1,30 @@
+@model EventDto
+<article class="event-card h-100">
+    <a asp-controller="Events" asp-action="Details" asp-route-id="@Model.EventID" class="event-card-media type-@Model.EventType.ToLowerInvariant()">
+        @if (!string.IsNullOrEmpty(Model.BannerUrl))
+        {
+            <img src="@Model.BannerUrl" alt="Banner for @Model.Name" loading="lazy" />
+        }
+        <span class="event-type-chip">@Model.EventType</span>
+    </a>
+    <div class="event-card-body">
+        <div class="bib" aria-label="@Model.EventDate.ToString("d MMMM yyyy")">
+            <span class="bib-day">@Model.EventDate.ToString("dd")</span>
+            <span class="bib-month">@Model.EventDate.ToString("MMM")</span>
+        </div>
+        <div class="flex-grow-1 min-w-0">
+            <h3 class="event-title"><a asp-controller="Events" asp-action="Details" asp-route-id="@Model.EventID">@Model.Name</a></h3>
+            <p class="event-meta mb-2">@Model.Location</p>
+            <div class="d-flex flex-wrap gap-1">
+                @foreach (var c in Model.Categories)
+                {
+                    <span class="dist-pill">@Formatting.Km(c.DistanceKm)</span>
+                }
+                @if (Model.Categories.Count == 0)
+                {
+                    <span class="text-muted small">Categories coming soon</span>
+                }
+            </div>
+        </div>
+    </div>
+</article>

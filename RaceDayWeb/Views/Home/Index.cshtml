@@ -1,0 +1,55 @@
+@model EventListViewModel
+@{ ViewData["Title"] = "Upcoming events"; var f = Model.Filter; }
+
+<section class="hero">
+    <h1>Pick your start line.</h1>
+    <p>Find upcoming running, walking and cycling events, choose your distance and enrol in minutes.</p>
+</section>
+
+<form method="get" asp-controller="Home" asp-action="Index" class="panel filter-bar">
+    <div class="row g-3 align-items-end">
+        <div class="col-md-4">
+            <label for="Search" class="form-label">Search</label>
+            <input id="Search" name="Search" value="@f.Search" class="form-control" placeholder="Event name or town" />
+        </div>
+        <div class="col-6 col-md-2">
+            <label for="Type" class="form-label">Type</label>
+            <select id="Type" name="Type" class="form-select">
+                <option value="">All</option>
+                @foreach (var t in new[] { "Run", "Walk", "Cycle" })
+                {
+                    <option value="@t" selected="@(f.Type == t)">@t</option>
+                }
+            </select>
+        </div>
+        <div class="col-6 col-md-2">
+            <label for="From" class="form-label">From</label>
+            <input id="From" name="From" type="date" value="@(f.From?.ToString("yyyy-MM-dd"))" class="form-control" />
+        </div>
+        <div class="col-6 col-md-2">
+            <label for="To" class="form-label">To</label>
+            <input id="To" name="To" type="date" value="@(f.To?.ToString("yyyy-MM-dd"))" class="form-control" />
+        </div>
+        <div class="col-6 col-md-2 d-flex gap-2">
+            <button type="submit" class="btn btn-signal flex-grow-1">Filter</button>
+            <a asp-action="Index" class="btn btn-outline-ink" title="Clear filters">Clear</a>
+        </div>
+    </div>
+</form>
+
+@if (Model.Events.Count == 0)
+{
+    <div class="panel text-center py-5">
+        <h2>No events found</h2>
+        <p class="text-muted mb-0">Try a different search or widen the dates. New events are added all the time.</p>
+    </div>
+}
+else
+{
+    <div class="row g-4">
+        @foreach (var ev in Model.Events)
+        {
+            <div class="col-md-6 col-xl-4"><partial name="_EventCard" model="ev" /></div>
+        }
+    </div>
+}

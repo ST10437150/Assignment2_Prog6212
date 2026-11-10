@@ -1,0 +1,60 @@
+@model DashboardViewModel
+@{ ViewData["Title"] = "Dashboard"; }
+<div class="page-head">
+    <div><h1>Organiser dashboard</h1><p>Welcome back, @Context.Session.GetUserName(). Here's how your events are doing.</p></div>
+    <a asp-controller="ManageEvents" asp-action="Create" class="btn btn-signal">Create event</a>
+</div>
+
+<div class="row g-3 mb-4">
+    <div class="col-sm-4"><div class="stat"><div class="stat-value">@Model.Events.Count</div><div class="stat-label">Events created</div></div></div>
+    <div class="col-sm-4"><div class="stat"><div class="stat-value">@Model.TotalEnrolments</div><div class="stat-label">Total enrolments</div></div></div>
+    <div class="col-sm-4"><div class="stat"><div class="stat-value">@Model.Upcoming.Count</div><div class="stat-label">Upcoming events</div></div></div>
+</div>
+
+<div class="row g-4">
+    <div class="col-lg-5">
+        <h2>Upcoming event dates</h2>
+        @if (Model.Upcoming.Count == 0)
+        {
+            <div class="panel text-muted">No upcoming events. <a asp-controller="ManageEvents" asp-action="Create">Create one</a> to get started.</div>
+        }
+        else
+        {
+            <ul class="list-group">
+                @foreach (var e in Model.Upcoming)
+                {
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <span><strong>@e.Name</strong><br /><span class="text-muted small">@e.Location</span></span>
+                        <span class="dist-pill">@e.EventDate.ToString("d MMM yyyy")</span>
+                    </li>
+                }
+            </ul>
+        }
+    </div>
+    <div class="col-lg-7">
+        <h2>Enrolments per event</h2>
+        @if (Model.Events.Count == 0)
+        {
+            <div class="panel text-muted">Nothing to show yet.</div>
+        }
+        else
+        {
+            <div class="table-responsive">
+                <table class="table rd-table">
+                    <thead><tr><th>Event</th><th>Date</th><th class="text-end">Enrolments</th><th></th></tr></thead>
+                    <tbody>
+                    @foreach (var e in Model.Events.OrderByDescending(x => x.EventDate))
+                    {
+                        <tr>
+                            <td>@e.Name</td>
+                            <td>@e.EventDate.ToString("d MMM yyyy")</td>
+                            <td class="text-end"><strong>@e.EnrolmentCount</strong></td>
+                            <td class="text-end"><a asp-controller="ManageEnrolments" asp-action="Index" asp-route-eventId="@e.EventID" class="btn btn-sm btn-outline-ink">View</a></td>
+                        </tr>
+                    }
+                    </tbody>
+                </table>
+            </div>
+        }
+    </div>
+</div>

@@ -1,0 +1,46 @@
+@model ProfileViewModel
+@{ ViewData["Title"] = "My profile"; }
+<div class="page-head"><div><h1>My profile</h1><p>@Model.Role account</p></div></div>
+<div class="row g-4">
+    <div class="col-md-4">
+        <div class="panel text-center">
+            @if (!string.IsNullOrEmpty(Model.ProfilePictureUrl))
+            {
+                <img src="@Model.ProfilePictureUrl" alt="Your profile picture" class="avatar-lg mb-3" />
+            }
+            else
+            {
+                <span class="avatar-lg avatar-lg-initial mb-3">@((string.IsNullOrEmpty(Model.Name) ? "?" : Model.Name.Substring(0, 1)).ToUpperInvariant())</span>
+            }
+            <form asp-action="UploadPicture" method="post" enctype="multipart/form-data">
+                <label for="picture" class="form-label">Profile picture</label>
+                <input id="picture" name="picture" type="file" accept="image/jpeg,image/png,image/gif,image/webp" class="form-control mb-2" required />
+                <div class="form-text mb-2">JPG, PNG, GIF or WEBP, up to 5 MB.</div>
+                <button type="submit" class="btn btn-ink w-100">Upload picture</button>
+            </form>
+        </div>
+    </div>
+    <div class="col-md-8">
+        <div class="panel">
+            <h2>Personal information</h2>
+            <form asp-action="Profile" method="post" novalidate>
+                <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+                <div class="mb-3">
+                    <label asp-for="Name" class="form-label"></label>
+                    <input asp-for="Name" class="form-control" />
+                    <span asp-validation-for="Name" class="text-danger"></span>
+                </div>
+                <div class="mb-3">
+                    <label asp-for="Email" class="form-label"></label>
+                    <input asp-for="Email" class="form-control" />
+                    <span asp-validation-for="Email" class="text-danger"></span>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Role</label>
+                    <input value="@Model.Role" class="form-control" disabled />
+                </div>
+                <button type="submit" class="btn btn-signal">Save changes</button>
+            </form>
+        </div>
+    </div>
+</div>
