@@ -1,0 +1,46 @@
+@model EventEnrolmentsViewModel
+@{
+    ViewData["Title"] = "Results";
+    var concluded = Model.Event.IsPast || Model.Event.EventDate == DateOnly.FromDateTime(DateTime.UtcNow);
+}
+<div class="page-head">
+    <div><h1>Results</h1><p>@Model.Event.Name &middot; @Model.Event.EventDate.ToString("d MMM yyyy")</p></div>
+    <a asp-controller="ManageEvents" asp-action="Index" class="btn btn-outline-ink">Back to my events</a>
+</div>
+
+@if (!concluded)
+{
+    <div class="alert alert-warning">Results can be captured once the event has taken place.</div>
+}
+
+@if (Model.Enrolments.Count == 0)
+{
+    <div class="panel text-center py-5"><h2>No confirmed participants</h2><p class="text-muted mb-0">Only confirmed enrolments can receive a result. <a asp-controller="ManageEnrolments" asp-action="Index" asp-route-eventId="@Model.Event.EventID">Review enrolments</a>.</p></div>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table rd-table">
+            <thead><tr><th>Participant</th><th>Category</th><th>Finish time (hh:mm:ss)</th><th>Position</th><th></th></tr></thead>
+            <tbody>
+            @foreach (var e in Model.Enrolments)
+            {
+                var fid = $"result-{e.EnrolmentID}";
+                <tr>
+                    <td><strong>@e.ParticipantName</strong></td>
+                    <td>@e.CategoryName</td>
+                    <td><input form="@fid" name="FinishTime" class="form-control form-control-sm" style="max-width:130px" placeholder="00:52:30" value="@(e.FinishTime.HasValue ? Formatting.Time(e.FinishTime) : "")" pattern="([01]?[0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9]" title="Use the format hh:mm:ss" required disabled="@(!concluded)" aria-label="Finish time for @e.ParticipantName" /></td>
+                    <td><input form="@fid" name="Position" type="number" min="1" class="form-control form-control-sm" style="max-width:100px" value="@e.Position" required disabled="@(!concluded)" aria-label="Position for @e.ParticipantName" /></td>
+                    <td class="text-end">
+                        <form id="@fid" asp-action="Save" method="post">
+                            <input type="hidden" name="EnrolmentId" value="@e.EnrolmentID" />
+                            <input type="hidden" name="EventId" value="@Model.Event.EventID" />
+                            <button type="submit" class="btn btn-sm btn-signal" disabled="@(!concluded)">@(e.Position.HasValue ? "Update" : "Publish")</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+}

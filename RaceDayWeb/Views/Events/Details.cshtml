@@ -1,0 +1,78 @@
+@model EventDetailsViewModel
+@{
+    var ev = Model.Event;
+    ViewData["Title"] = ev.Name;
+    var isParticipant = Context.Session.IsParticipant();
+    var isSignedIn = Context.Session.IsSignedIn();
+}
+<p class="mb-2"><a asp-controller="Home" asp-action="Index">&larr; All events</a></p>
+
+@if (!string.IsNullOrEmpty(ev.BannerUrl))
+{
+    <img src="@ev.BannerUrl" alt="Banner for @ev.Name" class="event-banner mb-4" />
+}
+else
+{
+    <div class="event-banner-empty mb-4" role="img" aria-label="No banner image"></div>
+}
+
+<div class="row g-4">
+    <div class="col-lg-7">
+        <span class="dist-pill">@ev.EventType</span>
+        <h1 class="mt-2">@ev.Name</h1>
+        <p class="event-meta fs-5 mb-3">@ev.EventDate.ToString("dddd, d MMMM yyyy") &middot; @ev.Location</p>
+        <div class="panel">
+            <h2>About this event</h2>
+            <p class="mb-0" style="white-space:pre-line">@(string.IsNullOrWhiteSpace(ev.RouteDescription) ? "The organiser hasn't added a description yet." : ev.RouteDescription)</p>
+        </div>
+        <p class="text-muted mt-3 mb-0">Organised by @ev.OrganiserName</p>
+    </div>
+
+    <div class="col-lg-5">
+        <div class="panel">
+            <h2>Categories</h2>
+
+            @if (Model.MyEnrolment is { } mine)
+            {
+                <div class="alert alert-info">
+                    You're enrolled in <strong>@mine.CategoryName</strong> <partial name="_StatusBadge" model="mine.Status" />
+                </div>
+            }
+
+            @if (ev.Categories.Count == 0)
+            {
+                <p class="text-muted mb-0">No categories have been added yet.</p>
+            }
+            else
+            {
+                <ul class="list-group list-group-flush">
+                    @foreach (var c in ev.Categories)
+                    {
+                        <li class="list-group-item d-flex justify-content-between align-items-center gap-2 px-0">
+                            <div>
+                                <strong>@c.Name</strong><br />
+                                <span class="text-muted">@Formatting.Km(c.DistanceKm)</span>
+                            </div>
+                            @if (ev.IsPast)
+                            {
+                                <span class="text-muted small">Event finished</span>
+                            }
+                            else if (isParticipant && Model.MyEnrolment is null)
+                            {
+                                <form asp-controller="Events" asp-action="Enrol" method="post">
+                                    <input type="hidden" name="eventId" value="@ev.EventID" />
+                                    <input type="hidden" name="categoryId" value="@c.CategoryID" />
+                                    <button type="submit" class="btn btn-signal btn-sm">Enrol</button>
+                                </form>
+                            }
+                            else if (!isSignedIn)
+                            {
+                                <a class="btn btn-outline-ink btn-sm" asp-controller="Account" asp-action="Login" asp-route-returnUrl="@Url.Action("Details", "Events", new { id = ev.EventID })">Log in to enrol</a>
+                            }
+                        </li>
+                    }
+                </ul>
+            }
+        </div>
+    </div>
+</div>

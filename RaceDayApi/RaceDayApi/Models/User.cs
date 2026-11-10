@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging;
 
 namespace RaceDayApi.Models;
 
@@ -9,6 +9,7 @@ public class User
     public string Email { get; set; } = string.Empty;
     public string PasswordHash { get; set; } = string.Empty;
     public string Role { get; set; } = "Participant"; // "Organiser" or "Participant"
+    public string? ProfilePictureUrl { get; set; } // image stored in Azure Blob Storage
 
     public ICollection<Event> OrganisedEvents { get; set; } = new List<Event>();
     public ICollection<Enrolment> Enrolments { get; set; } = new List<Enrolment>();

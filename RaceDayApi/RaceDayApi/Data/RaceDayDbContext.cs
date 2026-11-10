@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using RaceDayApi.Models;
 
 namespace RaceDayApi.Data;
@@ -31,6 +31,7 @@ public class RaceDayDbContext : DbContext
             e.HasIndex(x => x.Email).IsUnique();
             e.Property(x => x.PasswordHash).IsRequired().HasMaxLength(255);
             e.Property(x => x.Role).IsRequired().HasMaxLength(20).HasDefaultValue("Participant");
+            e.Property(x => x.ProfilePictureUrl).HasMaxLength(500);
         });
 
         // ---------- Events ----------
@@ -44,6 +45,7 @@ public class RaceDayDbContext : DbContext
             e.Property(x => x.Location).IsRequired().HasMaxLength(150);
             e.Property(x => x.RouteDescription).HasMaxLength(500);
             e.Property(x => x.EventType).IsRequired().HasMaxLength(20);
+            e.Property(x => x.BannerUrl).HasMaxLength(500);
 
             e.HasOne(x => x.Organiser)
             .WithMany(u => u.OrganisedEvents)
@@ -71,7 +73,7 @@ public class RaceDayDbContext : DbContext
         modelBuilder.Entity<Enrolment>(e =>
         {
             e.ToTable("Enrolments", t =>
-            t.HasCheckConstraint("CK_Enrolments_Status", "[Status] IN ('Confirmed', 'Cancelled')"));
+            t.HasCheckConstraint("CK_Enrolments_Status", "[Status] IN ('Pending', 'Confirmed', 'Cancelled')"));
             e.HasKey(x => x.EnrolmentID);
             e.Property(x => x.EnrolmentDate).HasColumnType("datetime").HasDefaultValueSql("GETDATE()");
             e.Property(x => x.Status).IsRequired().HasMaxLength(20).HasDefaultValue("Confirmed");

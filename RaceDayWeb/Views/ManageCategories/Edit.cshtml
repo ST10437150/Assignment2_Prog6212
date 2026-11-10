@@ -1,0 +1,26 @@
+@model CategoryFormModel
+@{ ViewData["Title"] = "Edit category"; }
+<div class="auth-wrap">
+    <div class="panel">
+        <h1 class="mb-1">Edit category</h1>
+        <p class="text-muted">@ViewBag.EventName</p>
+        <form asp-action="Edit" asp-route-id="@Model.CategoryID" method="post" novalidate>
+            <input type="hidden" asp-for="EventID" />
+            <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+            <div class="mb-3">
+                <label asp-for="Name" class="form-label"></label>
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <label asp-for="DistanceKm" class="form-label"></label>
+                <input asp-for="DistanceKm" type="number" step="0.1" min="0.1" class="form-control" />
+                <span asp-validation-for="DistanceKm" class="text-danger"></span>
+            </div>
+            <div class="d-flex gap-2">
+                <button type="submit" class="btn btn-signal">Save changes</button>
+                <a asp-action="Index" asp-route-eventId="@Model.EventID" class="btn btn-outline-ink">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>

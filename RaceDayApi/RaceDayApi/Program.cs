@@ -19,6 +19,7 @@ options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnectio
 // ---------- Our own services ----------
 builder.Services.AddScoped<IPasswordService, PasswordService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
+builder.Services.AddSingleton<IBlobStorageService, BlobStorageService>();
 
 // ---------- Authentication (JWT) ----------
 var jwtKey = builder.Configuration["Jwt:Key"]

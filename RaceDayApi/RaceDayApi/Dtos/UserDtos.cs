@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 using RaceDayApi.Models;
 
 namespace RaceDayApi.Dtos;
@@ -10,13 +10,15 @@ public class UserResponse
     public string Name { get; set; } = string.Empty;
     public string Email { get; set; } = string.Empty;
     public string Role { get; set; } = string.Empty;
+    public string? ProfilePictureUrl { get; set; }
 
     public static UserResponse From(User user) => new()
     {
         UserID = user.UserID,
         Name = user.Name,
         Email = user.Email,
-        Role = user.Role
+        Role = user.Role,
+        ProfilePictureUrl = user.ProfilePictureUrl
     };
 }
 

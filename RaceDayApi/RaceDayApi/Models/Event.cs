@@ -1,4 +1,4 @@
-﻿namespace RaceDayApi.Models;
+namespace RaceDayApi.Models;
 
 public class Event
 {
@@ -8,6 +8,7 @@ public class Event
     public DateOnly EventDate { get; set; }
     public string Location { get; set; } = string.Empty;
     public string? RouteDescription { get; set; }
+    public string? BannerUrl { get; set; } // image stored in Azure Blob Storage
     public string EventType { get; set; } = "Run"; // "Run", "Walk" or "Cycle"
 
     public User Organiser { get; set; } = null!;
